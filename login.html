@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - AstroAtlas</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .auth-container{max-width:420px;margin:80px auto;padding:24px;border-radius:8px;background:#111;color:#fff;border:1px solid #333}
+    .auth-container h2{margin-bottom:16px}
+    .auth-container label{display:block;margin:12px 0 6px}
+    .auth-container input{width:100%;padding:10px;border-radius:6px;border:1px solid #333;background:#1a1a1a;color:#fff}
+    .auth-container button{margin-top:16px;width:100%;padding:12px;border:none;border-radius:6px;background:#5b8bf7;color:#fff;font-weight:600;cursor:pointer}
+    .auth-msg{margin-top:12px;font-size:.95rem}
+    .muted{color:#aaa}
+  </style>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn-icons-png.flaticon.com/512/4718/4718235.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn-icons-png.flaticon.com/512/4718/4718235.png">
+  <script>
+    async function submitLogin(e){
+      e.preventDefault();
+      const email=document.getElementById('email').value.trim();
+      const password=document.getElementById('password').value;
+      const msg=document.getElementById('msg');
+      msg.textContent='';
+      try{
+        const res=await fetch('http://127.0.0.1:8080/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+        const data=await res.json();
+        if(!res.ok){throw new Error(data.error||'Login failed');}
+        // Persist only a simple flag for UI state; do not store user details
+        try{
+          localStorage.setItem('aa_isLoggedIn','true');
+          localStorage.removeItem('aa_user');
+        }catch(_e){/* ignore storage errors */}
+        msg.style.color='#4ade80';
+        msg.textContent='Login successful';
+        setTimeout(()=>{window.location.href='index.html';},800);
+      }catch(err){
+        msg.style.color='#f87171';
+        msg.textContent=err.message;
+      }
+    }
+  </script>
+  </head>
+<body>
+  <div class="auth-container">
+    <h2>Login</h2>
+    <form onsubmit="submitLogin(event)">
+      <label for="email">Email</label>
+      <input id="email" type="email" required>
+      <label for="password">Password</label>
+      <input id="password" type="password" required>
+      <button type="submit">Login</button>
+      <div id="msg" class="auth-msg"></div>
+    </form>
+    <p class="muted">No account? <a href="register.html">Register</a></p>
+  </div>
+</body>
+</html>
+
+

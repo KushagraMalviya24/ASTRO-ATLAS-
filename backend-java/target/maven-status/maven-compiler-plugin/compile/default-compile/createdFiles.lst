@@ -1,0 +1,5 @@
+com/astroatlas/App.class
+com/astroatlas/PasswordUtil.class
+com/astroatlas/UserDao.class
+com/astroatlas/Db.class
+com/astroatlas/User.class
